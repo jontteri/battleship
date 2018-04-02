@@ -1,4 +1,5 @@
 
+"use strict";
 var gameBoard = [];
 var hitCount = 0;
 var shipSizes = [5, 4, 3, 3, 2];
@@ -9,32 +10,28 @@ var torpedoCounter = 1;
 var gameBoardContainer;
 
 $(document).ready(function () {
-    "use strict";
 
+    //Listener for messages from service
     window.addEventListener("message", function (evt) {
         console.log("Received message", evt.data);
         var msg = evt.data;
         if (msg) {
             if (msg.messageType === "LOAD") {
-                if (msg.gameState) {
-
-                    //replace values if truthy (true), else keep old value
-
+                if (msg.gameState) {                    
                     score = msg.gameState.score;
                     torpedoCounter = msg.gameState.torpedoCounter;
                     hitCount = msg.gameState.hitCount;
 
-
                     if (msg.gameState.gameBoard) {
                         gameBoard = msg.gameState.gameBoard;
                     }
-
                 }
 
                 //send score to parent
                 var scoreMessage = {
                     messageType: "SCORE",
-                    score: score // Float
+                    score: score // Float
+
                 };
                 window.parent.postMessage(scoreMessage, "*");
 
@@ -111,23 +108,11 @@ function initialize(loadGame) {
         }
     }
 
-    /* lazy way of tracking when the game is won: just increment hitCount on every hit
-       in this version, and according to the official Hasbro rules (http://www.hasbro.com/common/instruct/BattleShip_(2002).PDF)
-       there are 17 hits to be made in order to win the game:
-          Carrier     - 5 hits
-          Battleship  - 4 hits
-          Destroyer   - 3 hits
-          Submarine   - 3 hits
-          Patrol Boat - 2 hits
-    */
-
-
     /* create the 2d array that will contain the status of each square on the board
        and place ships on the board (later, create function for random placement!)
     
        0 = empty, 1 = part of a ship, 2 = a sunken part of a ship, 3 = a missed shot
     */
-
 
     //Randomize ship positions
     for (var i = 0; i < shipSizes.length; i++) {
@@ -202,7 +187,6 @@ function initialize(loadGame) {
         ship = [];
     }
 
-
     //Create a single array of ship coordinates
     var takenCoords = [];
     for (var i = 0; i < shipCollection.length; i++) {
@@ -213,9 +197,7 @@ function initialize(loadGame) {
         }
     }
 
-
     //Create the gameBoard
-
     //i = x
     //j = y
     if (!loadGame) {
@@ -231,23 +213,6 @@ function initialize(loadGame) {
             gameBoard.push(rowArray);
         }
     }
-
-    //Create initial gameBoard
-    /*
-    var gameBoard = [
-                    [0,0,0,1,1,1,1,0,0,0],
-                    [0,0,0,0,0,0,0,0,0,0],
-                    [0,0,0,0,0,0,0,0,0,0],
-                    [0,0,0,0,0,0,1,0,0,0],
-                    [0,0,0,0,0,0,1,0,0,0],
-                    [1,0,0,0,0,0,1,1,1,1],
-                    [1,0,0,0,0,0,0,0,0,0],
-                    [1,0,0,1,0,0,0,0,0,0],
-                    [1,0,0,1,0,0,0,0,0,0],
-                    [1,0,0,0,0,0,0,0,0,0]
-                    ]
-    
-    */
 
     // set event listener for all elements in gameboard, run fireTorpedo function when square is clicked
     gameBoardContainer.addEventListener("click", fireTorpedo, false);
@@ -296,11 +261,10 @@ function fireTorpedo(e) {
         torpedoCounter += 1;
     }
 
-
     //send score to parent
     var scoreMessage = {
         messageType: "SCORE",
-        score: score // Float
+        score: score // Float
     };
     window.parent.postMessage(scoreMessage, "*");
 
@@ -311,14 +275,18 @@ function saveGame() {
     //send gameState to parent
     var saveMessage = {
         messageType: "SAVE",
-        gameState: {            gameBoard: gameBoard,            score: score,            torpedoCounter: torpedoCounter,            hitCount: hitCount        }
+        gameState: {
+            gameBoard: gameBoard,
+            score: score,
+            torpedoCounter: torpedoCounter,
+            hitCount: hitCount
+        }
     };
 
     saveMessageJSON = JSON.stringify(saveMessage);
     console.log(saveMessageJSON);
     window.parent.postMessage(saveMessage, "*");
 }
-
 
 $("#restart-button").click(function () {
     gameBoardContainer.removeEventListener("click", fireTorpedo, false);
@@ -340,7 +308,7 @@ $("#load-button").click(function () {
     var messageBoard = document.getElementById("messageboard");
     messageBoard.innerHTML = "Game load request sent!";
 
-    //send gameState to parent
+    //send loadRequest to parent
     var loadRequestMessage = {
         messageType: "LOAD_REQUEST"
     };
