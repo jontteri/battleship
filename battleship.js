@@ -302,8 +302,6 @@ function saveGame() {
         }
     };
 
-    saveMessageJSON = JSON.stringify(saveMessage);
-    console.log(saveMessageJSON);
     window.parent.postMessage(saveMessage, "*");
 }
 
