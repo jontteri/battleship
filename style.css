@@ -18,6 +18,12 @@ p, button, input {
     margin-top: 0px;
 }
 
+#scoreboard {
+    position: relative;
+    display: inline-block;
+    padding-left: 20px;
+}
+
 #gameboard {
 	position:relative;
 	margin:0 auto 0.5em auto;

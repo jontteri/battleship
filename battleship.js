@@ -27,6 +27,7 @@ $(document).ready(function () {
                     }
                 }
 
+                /* // Don't send score to the parent on load anymore
                 //send score to parent
                 var scoreMessage = {
                     messageType: "SCORE",
@@ -34,6 +35,7 @@ $(document).ready(function () {
 
                 };
                 window.parent.postMessage(scoreMessage, "*");
+                */
 
                 var messageBoard = document.getElementById("messageboard");
                 messageBoard.innerHTML = "Game loaded!";
@@ -68,6 +70,11 @@ function initialize(loadGame) {
     var rows = 10;
     var cols = 10;
     var squareSize = 50;
+
+    //Set score label
+    if (document.getElementById("score_p").innerHTML === "") {
+        document.getElementById("score_p").innerHTML = "0";
+    }
 
     // get the container element
     if (document.getElementById("gameboard").innerHTML !== "") {
@@ -222,6 +229,7 @@ function initialize(loadGame) {
 function fireTorpedo(e) {
     // if item clicked (e.target) is not the parent element on which the event listener was set (e.currentTarget)
     var messageBoard = document.getElementById("messageboard");
+    var scoreboard = document.getElementById("score_p");
 	if (e.target !== e.currentTarget) {
         // extract row and column # from the HTML element's id
 		var row = e.target.id.substring(1,2);
@@ -236,6 +244,7 @@ function fireTorpedo(e) {
             if (score > 0) {
                 score -= 100;
             }
+            scoreboard.innerHTML = score;
             messageBoard.innerHTML = "<p>Torpedo " + torpedoCounter + " missed!</p>";
 			
 		// if player clicks a square with a ship, change the color and change square's value
@@ -244,14 +253,23 @@ function fireTorpedo(e) {
 			// set this square's value to 2 to indicate the ship has been hit
             gameBoard[row][col] = 2;
             score += 300;
+            scoreboard.innerHTML = score;
             messageBoard.innerHTML = "<p>Torpedo " + torpedoCounter + " hit!</p>";
 			
 			// increment hitCount each time a ship is hit
 			hitCount++;
 			// this definitely shouldn't be hard-coded, but here it is anyway. lazy, simple solution:
             if (hitCount == 17) {
-                messageBoard.innerHTML = "All enemy battleships have been defeated! You win!";
+                messageBoard.innerHTML = "All enemy battleships have been defeated! You win! Your final score was " + score;
                 gameBoardContainer.removeEventListener("click", fireTorpedo, false);
+
+
+                //send final score to parent
+                var scoreMessage = {
+                    messageType: "SCORE",
+                    score: score // Float
+                };
+                window.parent.postMessage(scoreMessage, "*");
 			}
 			
 		// if player clicks a square that's been previously hit, let them know
@@ -261,13 +279,14 @@ function fireTorpedo(e) {
         torpedoCounter += 1;
     }
 
+    /* // Don't send score to the parent on each click anymore
     //send score to parent
     var scoreMessage = {
         messageType: "SCORE",
         score: score // Float
     };
     window.parent.postMessage(scoreMessage, "*");
-
+    */
     e.stopPropagation();
 }
 
