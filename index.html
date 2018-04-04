@@ -6,18 +6,19 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
+    <div id="container">
+        <h1>Battleship</h1>
 
-    <h1>Battleship</h1>
+        <p>Click the board to fire at a ship. Try to sink every battleship!</p>
+        <button type="button" id="restart-button">Restart</button>
+        <button type="button" id="load-button">Load</button>
+        <button type="button" id="save-button">Save</button>
+        <p id="scoreboard">Score: <label id="score_p"></label></p>
 
-    <p>Click the board to fire at a ship. Try to sink every battleship!</p>
-    <button type="button" id="restart-button">Restart</button>
-    <button type="button" id="load-button">Load</button>
-    <button type="button" id="save-button">Save</button>
-    <p id="scoreboard">Score: <label id="score_p"></label></p>
-
-    <div id="gameboard">
-    </div>
-    <div id="messageboard">
+        <div id="gameboard">
+        </div>
+        <div id="messageboard">
+        </div>
     </div>
 
     <script type="text/javascript" src="battleship.js"></script>
